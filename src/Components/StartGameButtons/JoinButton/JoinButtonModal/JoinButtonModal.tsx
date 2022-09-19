@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Button, Input, InputAdornment, InputLabel, Modal } from '@mui/material';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import PersonIcon from '@mui/icons-material/Person';
 import styles from './JoinButtonModal.styling';
 
 interface IJoinButtonModalProps {
@@ -22,6 +23,18 @@ const JoinButtonModal = ({ isJoinLobbyModalOpen, setIsJoinLobbyModalOpen }: IJoi
                 onClose={handleModalClose}
             >
                 <Box sx={styles.joinLobbyModalContainer}>
+                    <InputLabel htmlFor="input-with-icon-adornment">
+                        Your Username:
+                    </InputLabel>
+                    <Input
+                        sx={{ marginBottom: 1 }}
+                        id="input-with-icon-adornment"
+                        startAdornment={
+                            <InputAdornment position="start">
+                                <PersonIcon />
+                            </InputAdornment>
+                        }
+                    />
                     <InputLabel htmlFor="input-with-icon-adornment">
                         Enter lobby code:
                     </InputLabel>
