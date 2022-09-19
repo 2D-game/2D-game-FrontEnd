@@ -11,11 +11,17 @@ function App() {
   }, [])
 
   const connect = () => {
-    const socket = socketClient("");
-    console.log("socket", socket)
-    socket.on("connect", () => {
-      console.log("VEIKIAM")
-    });
+    // const socket = socketClient("");
+    // console.log("socket", socket)
+    // socket.on("connect", () => {
+    //   console.log("VEIKIAM")
+    // });
+    // socket.emit('test', {
+    //   Mantas: "tu duxas"
+    // })
+    // return () => {
+    //   socket.off('connect');
+    // };
   }
 
   return (
