@@ -1,10 +1,17 @@
 import React, { Suspense } from 'react';
-import Display2DGame from './Components/Display2DGame/Display2DGame';
+import { Routes, Route } from 'react-router-dom';
+
+const HomePage = React.lazy(() => import("./Pages/Home/Home.Page"));
+const LobbyPage = React.lazy(() => import('./Pages/Lobby/Lobby.Page'));
 
 function App() {
   return (
     <Suspense fallback={<div>Loading... </div>}>
-      <Display2DGame />
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/lobby/:id' element={<LobbyPage />} />
+      </Routes>
+      
     </Suspense>
   );
 }
