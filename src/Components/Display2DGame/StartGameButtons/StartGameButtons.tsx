@@ -1,6 +1,7 @@
-import { Box, Button, Divider } from '@mui/material';
+import { Box, Divider } from '@mui/material';
 import React, { useState } from 'react';
-import JoinButtonModal from './JoinButtonModal/JoinButtonModal';
+import CreateButton from './CreateButton/CreateButton';
+import JoinButton from './JoinButton/JoinButton';
 import styles from './StartGameButtons.styling';
 
 
@@ -8,34 +9,15 @@ const StartGameButtons = () => {
 
     const [isJoinLobbyModalOpen, setIsJoinLobbyModalOpen] = useState<boolean>(false);
 
-    const openJoinLobbyModal = () => {
-
-        setIsJoinLobbyModalOpen(true);
-    };
-
-    const createALobby = () => {
-
-    }
-
     return (
         <Box sx={styles.startButtonsContainer}>
-            <Button
-                onClick={openJoinLobbyModal}
-                sx={styles.startButton}
-            >
-                Join the lobby
-            </Button>
-            <Divider />
-            <Button
-                onClick={createALobby}
-                sx={styles.startButton}
-            >
-                Create a lobby
-            </Button>
-            <JoinButtonModal
-                isJoinLobbyModalOpen={isJoinLobbyModalOpen}
+            <JoinButton
                 setIsJoinLobbyModalOpen={setIsJoinLobbyModalOpen}
+                isJoinLobbyModalOpen={isJoinLobbyModalOpen}
             />
+            <Divider />
+            <CreateButton />
+
         </Box>
     )
 }
