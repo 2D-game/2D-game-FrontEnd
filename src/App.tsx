@@ -11,7 +11,7 @@ function App() {
   }, [])
 
   const connect = () => {
-    const socket = socketClient("7.tcp.eu.ngrok.io:15473");
+    const socket = socketClient("");
     console.log("socket", socket)
     socket.on("connect", () => {
       console.log("VEIKIAM")
