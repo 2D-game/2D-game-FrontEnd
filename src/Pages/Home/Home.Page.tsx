@@ -1,11 +1,12 @@
 import React from 'react';
-import Display2DGame from '../../Components/Display2DGame/Display2DGame';
+import StartGameButtons from '../../Components/StartGameButtons/StartGameButtons';
+import PageContainer from '../../Components/PageContainer/PageContainer';
 
 const HomePage = () => {
     return (
-        <>
-            <Display2DGame />
-        </>
+        <PageContainer>
+            <StartGameButtons />
+        </PageContainer>
     )
 }
 

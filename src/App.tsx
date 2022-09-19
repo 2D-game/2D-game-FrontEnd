@@ -9,9 +9,8 @@ function App() {
     <Suspense fallback={<div>Loading... </div>}>
       <Routes>
         <Route path='/' element={<HomePage />} />
-        <Route path='/lobby/:id' element={<LobbyPage />} />
+        <Route path='/lobby/:lobbyid' element={<LobbyPage />} />
       </Routes>
-      
     </Suspense>
   );
 }
