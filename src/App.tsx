@@ -1,8 +1,11 @@
 import React, { Suspense, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import socketClient from "socket.io-client";
+import { SocketContext } from './Context';
+
 const HomePage = React.lazy(() => import("./Pages/Home/Home.Page"));
 const LobbyPage = React.lazy(() => import('./Pages/Lobby/Lobby.Page'));
+const socket = socketClient("https://gameoop.herokuapp.com/");
 
 function App() {
 
@@ -11,25 +14,25 @@ function App() {
   }, [])
 
   const connect = () => {
-    // const socket = socketClient("");
-    // console.log("socket", socket)
-    // socket.on("connect", () => {
-    //   console.log("VEIKIAM")
-    // });
-    // socket.emit('test', {
-    //   Mantas: "tu duxas"
-    // })
-    // return () => {
-    //   socket.off('connect');
-    // };
+
+    socket.on("connect", () => {
+      console.log("VEIKIAM")
+    });
+
+    return () => {
+      socket.off('connect');
+    };
   }
 
   return (
     <Suspense fallback={<div>Loading... </div>}>
-      <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/lobby/:lobbyid' element={<LobbyPage />} />
-      </Routes>
+      <SocketContext.Provider value={socket}>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/lobby/:lobbyid' element={<LobbyPage />} />
+        </Routes>
+      </SocketContext.Provider>
+
     </Suspense>
   );
 }

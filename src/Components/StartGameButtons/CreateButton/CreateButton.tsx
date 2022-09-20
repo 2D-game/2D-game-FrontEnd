@@ -1,24 +1,31 @@
 import { Button } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './CreateButton.styling';
-import { useNavigate } from 'react-router-dom';
+import CreateButtonModal from './CreateButtonModal/CreateButtonModal';
 
 const CreateButton = () => {
 
-    const navigate = useNavigate();
+    const [isCreateLobbyModalOpen, setIsCreateLobbyModalOpen] = useState<boolean>(false);
 
     const createALobby = () => {
-        let generateRandomLobbyID = (Math.random() + 1).toString().substring(12);
-        navigate(`/lobby/${generateRandomLobbyID}`);
+        setIsCreateLobbyModalOpen(true);
+
     };
 
     return (
-        <Button
-            onClick={createALobby}
-            sx={styles.startButton}
-        >
-            Create a lobby
-        </Button>
+        <>
+            <Button
+                onClick={createALobby}
+                sx={styles.startButton}
+            >
+                Create a lobby
+            </Button>
+            <CreateButtonModal
+                isCreateLobbyModalOpen={isCreateLobbyModalOpen}
+                setIsCreateLobbyModalOpen={setIsCreateLobbyModalOpen}
+            />
+        </>
+
     )
 }
 
