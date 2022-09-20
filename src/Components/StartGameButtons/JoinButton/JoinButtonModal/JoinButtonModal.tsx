@@ -28,7 +28,7 @@ const JoinButtonModal = ({ isJoinLobbyModalOpen, setIsJoinLobbyModalOpen }: IJoi
         })
 
         return () => {
-            socket.off('create_lobby');
+            socket.off('join_lobby');
         };
     }, [socket])
 
