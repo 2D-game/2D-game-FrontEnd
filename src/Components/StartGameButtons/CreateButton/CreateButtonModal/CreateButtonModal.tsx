@@ -34,6 +34,7 @@ const CreateButtonModal = ({ isCreateLobbyModalOpen, setIsCreateLobbyModalOpen }
         return () => {
             socket.off('create_lobby');
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket])
 
 

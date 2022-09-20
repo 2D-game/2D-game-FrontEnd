@@ -30,6 +30,7 @@ const JoinButtonModal = ({ isJoinLobbyModalOpen, setIsJoinLobbyModalOpen }: IJoi
         return () => {
             socket.off('join_lobby');
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [socket])
 
     const handleModalClose = () => {
