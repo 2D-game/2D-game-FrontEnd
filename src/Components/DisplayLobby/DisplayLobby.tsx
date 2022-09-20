@@ -12,6 +12,8 @@ const DisplayLobby = () => {
 
     useEffect(() => {
         socket.emit('player_list')
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
