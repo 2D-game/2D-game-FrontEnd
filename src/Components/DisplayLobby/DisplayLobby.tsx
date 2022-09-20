@@ -17,7 +17,7 @@ const DisplayLobby = () => {
     useEffect(() => {
         socket.on('player_list', data => {
             console.log("playerlistdata", data)
-            setPlayersList(data.data.names)
+            setPlayersList(data.data.usernames)
         })
 
         return () => {

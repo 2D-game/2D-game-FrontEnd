@@ -47,7 +47,7 @@ const JoinButtonModal = ({ isJoinLobbyModalOpen, setIsJoinLobbyModalOpen }: IJoi
     const handleJoinButtonClick = () => {
         socket.emit('join_lobby',
             {
-                name: userName,
+                username: userName,
                 id: lobbyID
             }
         );
