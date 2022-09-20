@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Box, Button, Input, InputAdornment, InputLabel, Modal } from '@mui/material';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import PersonIcon from '@mui/icons-material/Person';
 import styles from './JoinButtonModal.styling';
+import { SocketContext } from '../../../../Context';
+import { Socket } from 'socket.io-client';
+import { useNavigate } from 'react-router-dom';
 
 interface IJoinButtonModalProps {
     isJoinLobbyModalOpen: boolean;
@@ -11,10 +14,45 @@ interface IJoinButtonModalProps {
 
 const JoinButtonModal = ({ isJoinLobbyModalOpen, setIsJoinLobbyModalOpen }: IJoinButtonModalProps) => {
 
-    const handleModalClose = () => {
+    const socket = useContext(SocketContext) as Socket;
+    const navigate = useNavigate();
+    const [userName, setUserName] = useState<string>("");
+    const [lobbyID, setLobbyID] = useState<string>("");
 
+    useEffect(() => {
+        socket.on('join_lobby', data => {
+
+            if (!data.error) {
+                navigate(`/lobby/${data.data.id}`);
+            }
+        })
+
+        return () => {
+            socket.off('create_lobby');
+        };
+    }, [socket])
+
+    const handleModalClose = () => {
         setIsJoinLobbyModalOpen(false);
     };
+
+    const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserName(e.target.value);
+    };
+
+    const handleLobbyIDChange = (e: any) => {
+        setLobbyID(e.target.value);
+    };
+
+    const handleJoinButtonClick = () => {
+        socket.emit('join_lobby',
+            {
+                name: userName,
+                id: lobbyID
+            }
+        );
+    }
+
 
     return (
         <>
@@ -34,6 +72,8 @@ const JoinButtonModal = ({ isJoinLobbyModalOpen, setIsJoinLobbyModalOpen }: IJoi
                                 <PersonIcon />
                             </InputAdornment>
                         }
+                        onChange={handleUserNameChange}
+                        value={userName}
                     />
                     <InputLabel htmlFor="input-with-icon-adornment">
                         Enter lobby code:
@@ -45,11 +85,14 @@ const JoinButtonModal = ({ isJoinLobbyModalOpen, setIsJoinLobbyModalOpen }: IJoi
                                 <MeetingRoomIcon />
                             </InputAdornment>
                         }
+                        onChange={handleLobbyIDChange}
+                        value={lobbyID}
                     />
                     <br />
                     <Button
                         variant='outlined'
                         sx={{ marginTop: 3 }}
+                        onClick={handleJoinButtonClick}
                     >
                         Join
                     </Button>

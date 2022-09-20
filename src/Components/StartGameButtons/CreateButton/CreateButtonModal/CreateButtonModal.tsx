@@ -42,8 +42,6 @@ const CreateButtonModal = ({ isCreateLobbyModalOpen, setIsCreateLobbyModalOpen }
     };
 
     const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("username: ", e.target.value);
-
         setUserName(e.target.value);
     };
 
@@ -72,6 +70,7 @@ const CreateButtonModal = ({ isCreateLobbyModalOpen, setIsCreateLobbyModalOpen }
                         </InputAdornment>
                     }
                     onChange={handleUserNameChange}
+                    value={userName}
                 />
                 <br />
                 <Button
