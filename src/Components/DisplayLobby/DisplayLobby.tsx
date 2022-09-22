@@ -19,7 +19,7 @@ const DisplayLobby = () => {
     useEffect(() => {
         socket.on('player_list', data => {
             console.log("playerlistdata", data)
-            setPlayersList(data.data.usernames)
+            setPlayersList(data.data.users)
         })
 
         return () => {
@@ -51,13 +51,13 @@ const DisplayLobby = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {playersList.map((player) => (
+                        {playersList.map((player: any) => (
                             <TableRow
-                                key={player}
+                                key={player.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
-                                    {player}
+                                    {player.username}
                                 </TableCell>
                             </TableRow>
                         ))}
