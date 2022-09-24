@@ -11,19 +11,19 @@ const DisplayLobby = () => {
     let { lobbyid } = useParams();
 
     useEffect(() => {
-        socket.emit('player_list')
+        socket.emit('lobby_player_list')
         
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
-        socket.on('player_list', data => {
+        socket.on('lobby_player_list', data => {
             console.log("playerlistdata", data)
             setPlayersList(data.data.users)
         })
 
         return () => {
-            socket.off('player_list');
+            socket.off('lobby_player_list');
         };
     }, [socket])
 
