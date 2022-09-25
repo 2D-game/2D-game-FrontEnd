@@ -86,9 +86,11 @@ const Game: React.FC = () => {
         }
       );
 
-      console.log("response from game_player_list");
-
       setPlayers(arr);
+
+      return () => {
+        socket.off("game_player_list");
+      };
     });
   }, [socket]);
 
@@ -103,11 +105,9 @@ const Game: React.FC = () => {
         }
       });
 
-      console.log("response from move");
-
       setPlayers(tempPlayers);
     });
-  }, [socket]);
+  }, [socket, players]);
 
   useEffect(() => {
     let tempMatrix = [[""]];
@@ -134,7 +134,6 @@ const Game: React.FC = () => {
       tempMatrix[player.coords.x][player.coords.y] = "PLAYER";
     });
 
-    console.log("updating matrix", tempMatrix);
     setMapMatrix(tempMatrix);
   }, [mapData, players]);
 
@@ -144,25 +143,21 @@ const Game: React.FC = () => {
         socket.emit("move", {
           direction: "LEFT",
         });
-        console.log("press a");
       }
       if (e.key == "s") {
         socket.emit("move", {
           direction: "DOWN",
         });
-        console.log("press s");
       }
       if (e.key == "d") {
         socket.emit("move", {
           direction: "RIGHT",
         });
-        console.log("press d");
       }
       if (e.key == "w") {
         socket.emit("move", {
           direction: "UP",
         });
-        console.log("press w");
       }
     });
   }, []);
@@ -190,7 +185,6 @@ const Game: React.FC = () => {
 
       rows.push(<StyledRow>{objects}</StyledRow>);
     });
-    console.log("rendering game");
 
     setRenderedGame(rows);
   }, [mapMatrix]);
