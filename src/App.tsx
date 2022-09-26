@@ -2,7 +2,7 @@ import React, { Suspense, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import socketClient from "socket.io-client";
 import { SocketContext } from "./Context";
-import Game from "./Pages/Game/Game";
+import GamePage from './Pages/Game/Game.Page'
 
 const HomePage = React.lazy(() => import("./Pages/Home/Home.Page"));
 const LobbyPage = React.lazy(() => import("./Pages/Lobby/Lobby.Page"));
@@ -29,7 +29,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/lobby/:lobbyid" element={<LobbyPage />} />
-          <Route path="/game/:lobbyid" element={<Game />} />
+          <Route path="/game/:lobbyID" element={<GamePage />} />
         </Routes>
       </SocketContext.Provider>
     </Suspense>
