@@ -39,7 +39,8 @@ const DisplayLobby = () => {
   }, [socket]);
 
   const handleReadyButtonClick = () => {
-    navigate(`/game/${lobbyid}`);
+	  socket.emit('set_ready')
+	  navigate(`/game/${lobbyid}`);
   };
 
   return (
