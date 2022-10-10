@@ -57,7 +57,9 @@ const Game = (props: { lobbyID: any }) => {
 
 	useEffect(() => {
 		socket.emit('set_ready')
+	}, [socket])
 
+	useEffect(() => {
 		socket.on('start_game', (data) => {
 			setGameData(data.data)
 		})
