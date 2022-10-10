@@ -1,10 +1,10 @@
 import { Modal, Box, InputLabel, Input, InputAdornment, Button } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
-import React, { useContext, useEffect, useState } from 'react';
-import { SocketContext } from '../../../../Context';
+import React, { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 import styles from './CreateButtonModal.styling';
+import SingletonClass from '../../../../SocketSingleton';
 
 interface ICreateButtonModalProps {
     isCreateLobbyModalOpen: boolean;
@@ -13,7 +13,9 @@ interface ICreateButtonModalProps {
 
 const CreateButtonModal = ({ isCreateLobbyModalOpen, setIsCreateLobbyModalOpen }: ICreateButtonModalProps) => {
 
-    const socket = useContext(SocketContext) as Socket;
+    let socketInstance = SingletonClass.getInstance() as any;
+    let socket = socketInstance.getSocket() as Socket;
+
     const navigate = useNavigate();
     const [userName, setUserName] = useState<string>("");
     const [isLobbyCreated, setIsLobbyCreated] = useState({
