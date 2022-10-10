@@ -1,5 +1,5 @@
 export class ButtonModalStrategy{
-    public modal: any = <div></div>;
+    public modal: any;
 
     displayModal(){
         return this.modal;
