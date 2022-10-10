@@ -1,15 +1,16 @@
 import { Button } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './CreateButton.styling';
-import CreateButtonModal from './CreateButtonModal/CreateButtonModal';
 
-const CreateButton = () => {
+interface ICreateButtonProps {
+    setIsCreateLobbyModalOpen: (bool: boolean) => void;
+    isCreateLobbyModalOpen: boolean;
+}
 
-    const [isCreateLobbyModalOpen, setIsCreateLobbyModalOpen] = useState<boolean>(false);
+const CreateButton = ({ isCreateLobbyModalOpen, setIsCreateLobbyModalOpen }: ICreateButtonProps) => {
 
     const createALobby = () => {
         setIsCreateLobbyModalOpen(true);
-
     };
 
     return (
@@ -20,10 +21,6 @@ const CreateButton = () => {
             >
                 Create a lobby
             </Button>
-            <CreateButtonModal
-                isCreateLobbyModalOpen={isCreateLobbyModalOpen}
-                setIsCreateLobbyModalOpen={setIsCreateLobbyModalOpen}
-            />
         </>
 
     )

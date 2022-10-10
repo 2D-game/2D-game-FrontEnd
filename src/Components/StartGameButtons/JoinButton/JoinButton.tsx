@@ -1,7 +1,6 @@
 import { Button } from '@mui/material';
 import React from 'react';
 import styles from './JoinButton.styling';
-import JoinButtonModal from './JoinButtonModal/JoinButtonModal';
 
 interface IJoinButtonProps {
     setIsJoinLobbyModalOpen: (bool: boolean) => void;
@@ -23,10 +22,7 @@ const JoinButton = ({ setIsJoinLobbyModalOpen, isJoinLobbyModalOpen }: IJoinButt
             >
                 Join the lobby
             </Button>
-            <JoinButtonModal
-                isJoinLobbyModalOpen={isJoinLobbyModalOpen}
-                setIsJoinLobbyModalOpen={setIsJoinLobbyModalOpen}
-            />
+            
         </>
 
     )
