@@ -1,5 +1,5 @@
 import { Object } from '../../Object'
-import { StyledGround, StyledPlayer, StyledWall } from '../../Game.style'
+import { StyledGround, StyledPlayer, StyledWall, StyledLava, StyledWater } from '../../Game.style'
 import { ReactComponent as IconPlayer } from "../../../../Assets/player.svg";
 
 const Column = (props: { x: number, y: number, obj: Object }) => {
@@ -9,6 +9,10 @@ const Column = (props: { x: number, y: number, obj: Object }) => {
 				return <StyledGround/>
 			case Object.WALL:
 				return <StyledWall/>
+			case Object.WATER:
+				return <StyledWater/>
+			case Object.WALL:
+				return <StyledLava/>
 			case Object.PLAYER:
 				return <StyledGround>
 					<StyledPlayer>

@@ -1,5 +1,7 @@
 export enum Object {
 	NULL = 'NULL',
 	WALL = 'WALL',
-	PLAYER = 'PLAYER'
+	PLAYER = 'PLAYER',
+	WATER = 'WATER',
+	LAVA = 'LAVA'
 }

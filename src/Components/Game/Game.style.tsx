@@ -37,6 +37,18 @@ export const StyledWall = styled.div`
   background-color: black;
 `
 
+export const StyledWater = styled.div`
+  height: 3rem;
+  width: 3rem;
+  background-color: blue;
+`
+
+export const StyledLava = styled.div`
+  height: 3rem;
+  width: 3rem;
+  background-color: coral;
+`
+
 export const StyledGround = styled.div`
   position: relative;
   height: 3rem;
