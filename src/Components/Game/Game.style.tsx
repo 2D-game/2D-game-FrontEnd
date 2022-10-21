@@ -49,6 +49,12 @@ export const StyledLava = styled.div`
   background-color: coral;
 `
 
+export const StyledFinish = styled.div`
+  height: 3rem;
+  width: 3rem;
+  background-color: rgb(0, 255, 0);
+`
+
 export const StyledGround = styled.div`
   position: relative;
   height: 3rem;

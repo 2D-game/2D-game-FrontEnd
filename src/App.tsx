@@ -7,7 +7,7 @@ import SocketSingleton from "./SocketSingleton";
 
 const HomePage = React.lazy(() => import("./Pages/Home/Home.Page"));
 const LobbyPage = React.lazy(() => import("./Pages/Lobby/Lobby.Page"));
-const socket = socketClient("https://gameoop.herokuapp.com/");
+const socket = socketClient("http://localhost:3000/");
 
 function App() {
   useEffect(() => {

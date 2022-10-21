@@ -3,5 +3,6 @@ export enum Object {
 	WALL = 'WALL',
 	PLAYER = 'PLAYER',
 	WATER = 'WATER',
-	LAVA = 'LAVA'
+	LAVA = 'LAVA',
+	FINISH = 'FINISH'
 }
