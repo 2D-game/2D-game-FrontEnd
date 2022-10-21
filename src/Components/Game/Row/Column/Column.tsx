@@ -11,7 +11,7 @@ const Column = (props: { x: number, y: number, obj: Object }) => {
 				return <StyledWall/>
 			case Object.WATER:
 				return <StyledWater/>
-			case Object.WALL:
+			case Object.LAVA:
 				return <StyledLava/>
 			case Object.PLAYER:
 				return <StyledGround>
