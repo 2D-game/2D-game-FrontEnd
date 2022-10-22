@@ -1,128 +1,149 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
-import { Object } from './Object'
-import Row from './Row/Row'
-import { SocketContext } from '../../Context'
-import { Socket } from 'socket.io-client'
-import { StyledExtraText, StyledGame, StyledLoadingBlock, StyledLoadingSpinner, StyledLoadingText } from './Game.style'
-import { ClipLoader } from 'react-spinners'
+import { useCallback, useContext, useEffect, useState } from "react";
+import { Object } from "./Object";
+import Row from "./Row/Row";
+import { SocketContext } from "../../Context";
+import { Socket } from "socket.io-client";
+import {
+  StyledExtraText,
+  StyledGame,
+  StyledLoadingBlock,
+  StyledLoadingSpinner,
+  StyledLoadingText,
+} from "./Game.style";
+import { ClipLoader } from "react-spinners";
+import { User } from "../../helpers/user";
 
 type Coordinates = {
-	x: number
-	y: number
-}
+  x: number;
+  y: number;
+};
 
 type Player = {
-	id: string
-	coords: Coordinates
-}
+  id: string;
+  level: number;
+  coords: Coordinates;
+};
 
 type GameData = {
-	map: {
-		height: number
-		width: number
-		spawnPoint: Coordinates,
-		objects: Object[][]
-	}
-}
+  map: {
+    height: number;
+    width: number;
+    spawnPoint: Coordinates;
+    objects: Object[][];
+  };
+};
 
-const keyToDirection: Map<string, string> = new Map(
-	[
-		['w', 'UP'],
-		['a', 'LEFT'],
-		['s', 'DOWN'],
-		['d', 'RIGHT']
-	]
-)
+const keyToDirection: Map<string, string> = new Map([
+  ["w", "UP"],
+  ["a", "LEFT"],
+  ["s", "DOWN"],
+  ["d", "RIGHT"],
+]);
 
 const Game = (props: { lobbyID: any }) => {
-	const [loading, setLoading] = useState<boolean>(true)
-	const [gameData, setGameData] = useState<GameData | null>(null)
-	const [players, setPlayers] = useState<Player[] | null>(null)
-	const [matrix, setMatrix] = useState<Object[][] | null>(null)
+  const [loading, setLoading] = useState<boolean>(true);
+  const [gameData, setGameData] = useState<GameData | null>(null);
+  const [players, setPlayers] = useState<Player[] | null>(null);
+  const [matrix, setMatrix] = useState<Object[][] | null>(null);
+  const userName = User.userName;
 
-	const socket = useContext(SocketContext) as Socket
+  const socket = useContext(SocketContext) as Socket;
 
-	const onMove = useCallback((data: any) => {
-		if (!players) {
-			return
-		}
-		const newPlayers = players.map((player) => {
-			if (player.id === data.data.id) {
-				return data.data
-			}
-			return player
-		})
-		setPlayers(newPlayers)
-	}, [players])
+  const onMove = useCallback(
+    (data: any) => {
+      if (!players) {
+        return;
+      }
 
-	useEffect(() => {
-		socket.on('start_game', (data) => {
-			setGameData(data.data)
-		})
+      if (data.data.map && data.data.userName == userName) {
+        setGameData({ map: data.data.map });
+      }
 
-		socket.on('game_player_list', (data) => {
-			setPlayers(data.data.users)
-		})
+      const newPlayers = players.map((player) => {
+        if (player.id === data.data.id) {
+          return {
+            id: data.data.id,
+            level: data.data.level,
+            coords: data.data.coords,
+          };
+        }
+        return player;
+      });
 
-		socket.on('move', onMove)
+      setPlayers(newPlayers);
+    },
+    [players]
+  );
 
-		return () => {
-			socket.off('start_game')
-			socket.off('game_player_list')
-			socket.off('move')
-		}
-	}, [socket, onMove])
+  useEffect(() => {
+    socket.on("start_game", (data) => {
+      setGameData(data.data);
+    });
 
-	useEffect(() => {
-		if (!gameData || !players) {
-			return
-		}
-		const matrix = gameData.map.objects.map((row) => {
-			return row.map((obj) => obj)
-		})
-		players.forEach((player) => {
-			matrix[player.coords.y][player.coords.x] = Object.PLAYER
-		})
-		setMatrix(matrix)
-		setLoading(false)
-	}, [gameData, players])
+    socket.on("game_player_list", (data) => {
+      setPlayers(data.data.users);
+    });
 
-	useEffect(() => {
-		window.addEventListener('keypress', (e) => {
-			const direction = keyToDirection.get(e.key)
-			if (direction) {
-				socket.emit('move', { direction })
-			}
-		})
+    socket.on("move", onMove);
 
-		return () => {
-			window.removeEventListener('keypress', () => {})
-		}
-	}, [socket])
+    return () => {
+      socket.off("start_game");
+      socket.off("game_player_list");
+      socket.off("move");
+    };
+  }, [socket, onMove]);
 
-	return (
-		<>
-			{loading ? (
-				<StyledLoadingBlock>
-					<StyledLoadingText>Lobby ID: {props.lobbyID}</StyledLoadingText>
+  useEffect(() => {
+    if (!gameData || !players) {
+      return;
+    }
 
-					<StyledExtraText>
-						Waiting for all players to be ready...
-					</StyledExtraText>
+    const matrix = gameData.map.objects.map((row) => {
+      return row.map((obj) => obj);
+    });
 
-					<StyledLoadingSpinner>
-						<ClipLoader loading={loading} size={100}/>
-					</StyledLoadingSpinner>
-				</StyledLoadingBlock>
-			) : (
-				<StyledGame>
-					{matrix && matrix.map((row, y) => (
-						<Row key={y} row={row} y={y}/>
-					))}
-				</StyledGame>
-			)}
-		</>
-	)
-}
+    players.forEach((player) => {
+      matrix[player.coords.y][player.coords.x] = Object.PLAYER;
+    });
 
-export default Game
+    setMatrix(matrix);
+    setLoading(false);
+  }, [gameData, players]);
+
+  useEffect(() => {
+    window.addEventListener("keypress", (e) => {
+      const direction = keyToDirection.get(e.key);
+      if (direction) {
+        socket.emit("move", { direction });
+      }
+    });
+
+    return () => {
+      window.removeEventListener("keypress", () => {});
+    };
+  }, [socket]);
+
+  return (
+    <>
+      {loading ? (
+        <StyledLoadingBlock>
+          <StyledLoadingText>Lobby ID: {props.lobbyID}</StyledLoadingText>
+
+          <StyledExtraText>
+            Waiting for all players to be ready...
+          </StyledExtraText>
+
+          <StyledLoadingSpinner>
+            <ClipLoader loading={loading} size={100} />
+          </StyledLoadingSpinner>
+        </StyledLoadingBlock>
+      ) : (
+        <StyledGame>
+          {matrix && matrix.map((row, y) => <Row key={y} row={row} y={y} />)}
+        </StyledGame>
+      )}
+    </>
+  );
+};
+
+export default Game;
