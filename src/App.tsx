@@ -2,13 +2,13 @@ import React, { Suspense, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import socketClient from "socket.io-client";
 import { SocketContext } from "./Context";
-import GamePage from './Pages/Game/Game.Page'
+import GamePage from "./Pages/Game/Game.Page";
 import SocketSingleton from "./SocketSingleton";
 
 const HomePage = React.lazy(() => import("./Pages/Home/Home.Page"));
 const LobbyPage = React.lazy(() => import("./Pages/Lobby/Lobby.Page"));
 const socket = socketClient("https://gameoop.herokuapp.com/");
-const socket = socketClient("127.0.0.1:3000/");
+// const socket = socketClient("127.0.0.1:3000/");
 
 function App() {
   useEffect(() => {
@@ -27,8 +27,6 @@ function App() {
     };
   };
 
-
-  
   return (
     <Suspense fallback={<div>Loading... </div>}>
       <SocketContext.Provider value={socket}>
