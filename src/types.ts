@@ -18,3 +18,9 @@ export interface GamePlayer {
   level: number;
   coords: Coordinates;
 }
+
+export interface Colors {
+  lava: string;
+  wall: string;
+  water: string;
+}

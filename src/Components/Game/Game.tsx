@@ -12,7 +12,7 @@ import {
 } from "./Game.style";
 import { ClipLoader } from "react-spinners";
 import { CurrentUser } from "../../helpers/currentUser";
-import { GamePlayer } from "../../types";
+import { Colors, GamePlayer } from "../../types";
 
 type Coordinates = {
   x: number;
@@ -46,6 +46,7 @@ const Game = (props: { lobbyID: any }) => {
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [players, setPlayers] = useState<Player[] | null>(null);
   const [matrix, setMatrix] = useState<Object[][] | null>(null);
+  const [colors, setColors] = useState<Colors>();
 
   const socket = useContext(SocketContext) as Socket;
 
@@ -58,6 +59,7 @@ const Game = (props: { lobbyID: any }) => {
       if (data.data.map && data.data.userName == CurrentUser.userName) {
         setGameData({ map: data.data.map });
         CurrentUser.currentLevel = data.data.level;
+        setColors(data.data.colors);
       }
 
       const newPlayers = players.map((player) => {
@@ -79,6 +81,7 @@ const Game = (props: { lobbyID: any }) => {
   useEffect(() => {
     socket.on("start_game", (data) => {
       setGameData(data.data);
+      setColors(data.data.colors);
     });
 
     socket.on("game_player_list", (data) => {
@@ -146,7 +149,11 @@ const Game = (props: { lobbyID: any }) => {
         </StyledLoadingBlock>
       ) : (
         <StyledGame>
-          {matrix && matrix.map((row, y) => <Row key={y} row={row} y={y} />)}
+          {matrix &&
+            colors &&
+            matrix.map((row, y) => (
+              <Row key={y} row={row} y={y} colors={colors} />
+            ))}
         </StyledGame>
       )}
     </>
