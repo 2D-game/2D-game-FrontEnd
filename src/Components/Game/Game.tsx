@@ -11,7 +11,8 @@ import {
   StyledLoadingText,
 } from "./Game.style";
 import { ClipLoader } from "react-spinners";
-import { User } from "../../helpers/user";
+import { CurrentUser } from "../../helpers/currentUser";
+import { GamePlayer } from "../../types";
 
 type Coordinates = {
   x: number;
@@ -45,7 +46,6 @@ const Game = (props: { lobbyID: any }) => {
   const [gameData, setGameData] = useState<GameData | null>(null);
   const [players, setPlayers] = useState<Player[] | null>(null);
   const [matrix, setMatrix] = useState<Object[][] | null>(null);
-  const userName = User.userName;
 
   const socket = useContext(SocketContext) as Socket;
 
@@ -55,8 +55,9 @@ const Game = (props: { lobbyID: any }) => {
         return;
       }
 
-      if (data.data.map && data.data.userName == userName) {
+      if (data.data.map && data.data.userName == CurrentUser.userName) {
         setGameData({ map: data.data.map });
+        CurrentUser.currentLevel = data.data.level;
       }
 
       const newPlayers = players.map((player) => {
@@ -82,6 +83,10 @@ const Game = (props: { lobbyID: any }) => {
 
     socket.on("game_player_list", (data) => {
       setPlayers(data.data.users);
+      data.data.users.forEach((user: GamePlayer) => {
+        if (CurrentUser.userName == user.username) CurrentUser.id = user.id;
+        CurrentUser.currentLevel = user.level;
+      });
     });
 
     socket.on("move", onMove);
@@ -103,7 +108,9 @@ const Game = (props: { lobbyID: any }) => {
     });
 
     players.forEach((player) => {
-      matrix[player.coords.y][player.coords.x] = Object.PLAYER;
+      if (player.level == CurrentUser.currentLevel) {
+        matrix[player.coords.y][player.coords.x] = Object.PLAYER;
+      }
     });
 
     setMatrix(matrix);

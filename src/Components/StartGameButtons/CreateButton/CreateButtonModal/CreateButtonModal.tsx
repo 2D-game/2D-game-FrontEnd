@@ -12,7 +12,7 @@ import { Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import styles from "./CreateButtonModal.styling";
 import SingletonClass from "../../../../SocketSingleton";
-import { User } from "../../../../helpers/user";
+import { CurrentUser } from "../../../../helpers/currentUser";
 
 interface ICreateButtonModalProps {
   isCreateLobbyModalOpen: boolean;
@@ -57,7 +57,7 @@ const CreateButtonModal = ({
 
   const handleCreateNewLobbyButtonClick = () => {
     socket.emit("create_lobby", { username: userName });
-    User.userName = userName;
+    CurrentUser.userName = userName;
   };
 
   return (

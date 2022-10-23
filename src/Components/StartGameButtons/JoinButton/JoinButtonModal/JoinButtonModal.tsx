@@ -13,7 +13,7 @@ import styles from "./JoinButtonModal.styling";
 import { SocketContext } from "../../../../Context";
 import { Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
-import { User } from "../../../../helpers/user";
+import { CurrentUser } from "../../../../helpers/currentUser";
 
 interface IJoinButtonModalProps {
   isJoinLobbyModalOpen: boolean;
@@ -59,7 +59,7 @@ const JoinButtonModal = ({
       username: userName,
       id: lobbyID,
     });
-    User.userName = userName;
+    CurrentUser.userName = userName;
   };
 
   return (
