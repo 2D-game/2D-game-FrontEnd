@@ -1,91 +1,93 @@
-import { Modal, Box, InputLabel, Input, InputAdornment, Button } from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
-import React, { useEffect, useState } from 'react';
-import { Socket } from 'socket.io-client';
-import { useNavigate } from 'react-router-dom';
-import styles from './CreateButtonModal.styling';
-import SingletonClass from '../../../../SocketSingleton';
+import {
+  Modal,
+  Box,
+  InputLabel,
+  Input,
+  InputAdornment,
+  Button,
+} from "@mui/material";
+import PersonIcon from "@mui/icons-material/Person";
+import React, { useEffect, useState } from "react";
+import { Socket } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
+import styles from "./CreateButtonModal.styling";
+import SingletonClass from "../../../../SocketSingleton";
+import { CurrentUser } from "../../../../helpers/currentUser";
 
 interface ICreateButtonModalProps {
-    isCreateLobbyModalOpen: boolean;
-    setIsCreateLobbyModalOpen: (bool: boolean) => void;
-};
+  isCreateLobbyModalOpen: boolean;
+  setIsCreateLobbyModalOpen: (bool: boolean) => void;
+}
 
-const CreateButtonModal = ({ isCreateLobbyModalOpen, setIsCreateLobbyModalOpen }: ICreateButtonModalProps) => {
+const CreateButtonModal = ({
+  isCreateLobbyModalOpen,
+  setIsCreateLobbyModalOpen,
+}: ICreateButtonModalProps) => {
+  let socketInstance = SingletonClass.getInstance() as any;
+  let socket = socketInstance.getSocket() as Socket;
 
-    let socketInstance = SingletonClass.getInstance() as any;
-    let socket = socketInstance.getSocket() as Socket;
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState<string>("");
+  const [isLobbyCreated, setIsLobbyCreated] = useState({
+    isCreated: false,
+    ID: -1,
+  });
 
-    const navigate = useNavigate();
-    const [userName, setUserName] = useState<string>("");
-    const [isLobbyCreated, setIsLobbyCreated] = useState({
-        isCreated: false,
-        ID: -1
+  useEffect(() => {
+    socket.on("create_lobby", (data) => {
+      if (!isLobbyCreated.isCreated) {
+        setIsLobbyCreated({ isCreated: true, ID: data.data.id });
+        navigate(`/lobby/${data.data.id}`);
+      }
     });
 
-    useEffect(() => {
-        socket.on('create_lobby', data => {
-            console.log("data: ", data)
-            if (!isLobbyCreated.isCreated) {
-                setIsLobbyCreated({ isCreated: true, ID: data.data.id })
-                navigate(`/lobby/${data.data.id}`);
-            }
-
-        })
-
-        return () => {
-            socket.off('create_lobby');
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [socket])
-
-
-    const handleModalClose = () => {
-        setIsCreateLobbyModalOpen(false);
+    return () => {
+      socket.off("create_lobby");
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
 
-    const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUserName(e.target.value);
-    };
+  const handleModalClose = () => {
+    setIsCreateLobbyModalOpen(false);
+  };
 
-    const handleCreateNewLobbyButtonClick = () => {
-        socket.emit('create_lobby',
-            { username: userName }
-        );
-        console.log("to create lobby");
-    };
+  const handleUserNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(e.target.value);
+  };
 
-    return (
-        <Modal
-            open={isCreateLobbyModalOpen}
-            onClose={handleModalClose}
+  const handleCreateNewLobbyButtonClick = () => {
+    socket.emit("create_lobby", { username: userName });
+    CurrentUser.userName = userName;
+  };
+
+  return (
+    <Modal open={isCreateLobbyModalOpen} onClose={handleModalClose}>
+      <Box sx={styles.createLobbyModalContainer}>
+        <InputLabel htmlFor="input-with-icon-adornment">
+          Your Username:
+        </InputLabel>
+        <Input
+          sx={{ marginBottom: 1 }}
+          id="input-with-icon-adornment"
+          startAdornment={
+            <InputAdornment position="start">
+              <PersonIcon />
+            </InputAdornment>
+          }
+          onChange={handleUserNameChange}
+          value={userName}
+        />
+        <br />
+        <Button
+          variant="outlined"
+          sx={{ marginTop: 3 }}
+          onClick={handleCreateNewLobbyButtonClick}
         >
-            <Box sx={styles.createLobbyModalContainer}>
-                <InputLabel htmlFor="input-with-icon-adornment">
-                    Your Username:
-                </InputLabel>
-                <Input
-                    sx={{ marginBottom: 1 }}
-                    id="input-with-icon-adornment"
-                    startAdornment={
-                        <InputAdornment position="start">
-                            <PersonIcon />
-                        </InputAdornment>
-                    }
-                    onChange={handleUserNameChange}
-                    value={userName}
-                />
-                <br />
-                <Button
-                    variant='outlined'
-                    sx={{ marginTop: 3 }}
-                    onClick={handleCreateNewLobbyButtonClick}
-                >
-                    Create
-                </Button>
-            </Box>
-        </Modal>
-    )
-}
+          Create
+        </Button>
+      </Box>
+    </Modal>
+  );
+};
 
 export default CreateButtonModal;
