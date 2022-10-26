@@ -3,7 +3,14 @@ import { Object } from './Object'
 import Row from './Row/Row'
 import { SocketContext } from '../../Context'
 import { Socket } from 'socket.io-client'
-import { StyledExtraText, StyledGame, StyledLoadingBlock, StyledLoadingSpinner, StyledLoadingText } from './Game.style'
+import {
+	StyledExtraText,
+	StyledGame,
+	StyledLoadingBlock,
+	StyledLoadingSpinner,
+	StyledLoadingText,
+	StyledWonText
+} from './Game.style'
 import { ClipLoader } from 'react-spinners'
 import { CurrentUser } from '../../helpers/currentUser'
 import { Colors, GamePlayer } from '../../types'
@@ -28,6 +35,10 @@ type GameData = {
 	};
 };
 
+type WonData = {
+	username: string
+}
+
 const keyToDirection: Map<string, string> = new Map([
 	['w', 'UP'],
 	['a', 'LEFT'],
@@ -41,12 +52,18 @@ const Game = (props: { lobbyID: any }) => {
 	const [players, setPlayers] = useState<Player[] | null>(null)
 	const [matrix, setMatrix] = useState<Object[][] | null>(null)
 	const [colors, setColors] = useState<Colors>()
+	const [won, setWon] = useState<WonData | null>(null)
 
 	const socket = useContext(SocketContext) as Socket
 
 	const onMove = useCallback(
 		(data: any) => {
 			if (!players) {
+				return
+			}
+
+			if (data.data?.won) {
+				setWon({ username: data.data.userName })
 				return
 			}
 
@@ -133,34 +150,40 @@ const Game = (props: { lobbyID: any }) => {
 		}
 	}, [socket])
 
+	if (loading) {
+		return (
+			<StyledLoadingBlock>
+				<StyledLoadingText>Lobby ID: {props.lobbyID}</StyledLoadingText>
+
+				<StyledExtraText>
+					Waiting for all players to be ready...
+				</StyledExtraText>
+
+				<StyledLoadingSpinner>
+					<ClipLoader loading={loading} size={100}/>
+				</StyledLoadingSpinner>
+			</StyledLoadingBlock>
+		)
+	} else if (won) {
+		return (
+			<StyledLoadingBlock>
+				<StyledWonText>Player {won.username} won the game!</StyledWonText>
+			</StyledLoadingBlock>
+		)
+	}
+
 	return (
 		<>
-			{loading ? (
-				<StyledLoadingBlock>
-					<StyledLoadingText>Lobby ID: {props.lobbyID}</StyledLoadingText>
-
-					<StyledExtraText>
-						Waiting for all players to be ready...
-					</StyledExtraText>
-
-					<StyledLoadingSpinner>
-						<ClipLoader loading={loading} size={100}/>
-					</StyledLoadingSpinner>
-				</StyledLoadingBlock>
-			) : (
-				<>
-					<StyledGame>
-						{matrix &&
-							colors &&
-							matrix.map((row, y) => (
-								<Row key={y} row={row} y={y} colors={colors}/>
-							))}
-					</StyledGame>
-					<div>
-						<button onClick={forceNextLevel}>Force next level</button>
-					</div>
-				</>
-			)}
+			<StyledGame>
+				{matrix &&
+					colors &&
+					matrix.map((row, y) => (
+						<Row key={y} row={row} y={y} colors={colors}/>
+					))}
+			</StyledGame>
+			<div>
+				<button onClick={forceNextLevel}>Force next level</button>
+			</div>
 		</>
 	)
 }

@@ -11,6 +11,12 @@ export const StyledLoadingText = styled.div`
   justify-content: center;
 `;
 
+export const StyledWonText = styled.div`
+  display: flex;
+  justify-content: center;
+  font-size: 2rem;
+`;
+
 export const StyledExtraText = styled.div`
   display: flex;
   justify-content: center;
