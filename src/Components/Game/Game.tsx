@@ -1,163 +1,168 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { Object } from "./Object";
-import Row from "./Row/Row";
-import { SocketContext } from "../../Context";
-import { Socket } from "socket.io-client";
-import {
-  StyledExtraText,
-  StyledGame,
-  StyledLoadingBlock,
-  StyledLoadingSpinner,
-  StyledLoadingText,
-} from "./Game.style";
-import { ClipLoader } from "react-spinners";
-import { CurrentUser } from "../../helpers/currentUser";
-import { Colors, GamePlayer } from "../../types";
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { Object } from './Object'
+import Row from './Row/Row'
+import { SocketContext } from '../../Context'
+import { Socket } from 'socket.io-client'
+import { StyledExtraText, StyledGame, StyledLoadingBlock, StyledLoadingSpinner, StyledLoadingText } from './Game.style'
+import { ClipLoader } from 'react-spinners'
+import { CurrentUser } from '../../helpers/currentUser'
+import { Colors, GamePlayer } from '../../types'
 
 type Coordinates = {
-  x: number;
-  y: number;
+	x: number;
+	y: number;
 };
 
 type Player = {
-  id: string;
-  level: number;
-  coords: Coordinates;
+	id: string;
+	level: number;
+	coords: Coordinates;
 };
 
 type GameData = {
-  map: {
-    height: number;
-    width: number;
-    spawnPoint: Coordinates;
-    objects: Object[][];
-  };
+	map: {
+		height: number;
+		width: number;
+		spawnPoint: Coordinates;
+		objects: Object[][];
+	};
 };
 
 const keyToDirection: Map<string, string> = new Map([
-  ["w", "UP"],
-  ["a", "LEFT"],
-  ["s", "DOWN"],
-  ["d", "RIGHT"],
-]);
+	['w', 'UP'],
+	['a', 'LEFT'],
+	['s', 'DOWN'],
+	['d', 'RIGHT']
+])
 
 const Game = (props: { lobbyID: any }) => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [gameData, setGameData] = useState<GameData | null>(null);
-  const [players, setPlayers] = useState<Player[] | null>(null);
-  const [matrix, setMatrix] = useState<Object[][] | null>(null);
-  const [colors, setColors] = useState<Colors>();
+	const [loading, setLoading] = useState<boolean>(true)
+	const [gameData, setGameData] = useState<GameData | null>(null)
+	const [players, setPlayers] = useState<Player[] | null>(null)
+	const [matrix, setMatrix] = useState<Object[][] | null>(null)
+	const [colors, setColors] = useState<Colors>()
 
-  const socket = useContext(SocketContext) as Socket;
+	const socket = useContext(SocketContext) as Socket
 
-  const onMove = useCallback(
-    (data: any) => {
-      if (!players) {
-        return;
-      }
+	const onMove = useCallback(
+		(data: any) => {
+			if (!players) {
+				return
+			}
 
-      if (data.data.map && data.data.userName === CurrentUser.userName) {
-        setGameData({ map: data.data.map });
-        CurrentUser.currentLevel = data.data.level;
-        setColors(data.data.colors);
-      }
+			if (data.data.map && data.data.userName === CurrentUser.userName) {
+				setGameData({ map: data.data.map })
+				CurrentUser.currentLevel = data.data.level
+				setColors(data.data.colors)
+			}
 
-      const newPlayers = players.map((player) => {
-        if (player.id === data.data.id) {
-          return {
-            id: data.data.id,
-            level: data.data.level,
-            coords: data.data.coords,
-          };
-        }
-        return player;
-      });
+			const newPlayers = players.map((player) => {
+				if (player.id === data.data.id) {
+					return {
+						id: data.data.id,
+						level: data.data.level,
+						coords: data.data.coords
+					}
+				}
+				return player
+			})
 
-      setPlayers(newPlayers);
-    },
-    [players]
-  );
+			setPlayers(newPlayers)
+		},
+		[players]
+	)
 
-  useEffect(() => {
-    socket.on("start_game", (data) => {
-      setGameData(data.data);
-      setColors(data.data.colors);
-    });
+	useEffect(() => {
+		socket.on('start_game', (data) => {
+			setGameData(data.data)
+			setColors(data.data.colors)
+		})
 
-    socket.on("game_player_list", (data) => {
-      setPlayers(data.data.users);
-      data.data.users.forEach((user: GamePlayer) => {
-        if (CurrentUser.userName === user.username) CurrentUser.id = user.id;
-        CurrentUser.currentLevel = user.level;
-      });
-    });
+		socket.on('game_player_list', (data) => {
+			setPlayers(data.data.users)
+			data.data.users.forEach((user: GamePlayer) => {
+				if (CurrentUser.userName === user.username) CurrentUser.id = user.id
+				CurrentUser.currentLevel = user.level
+			})
+		})
 
-    socket.on("move", onMove);
+		socket.on('move', onMove)
+		socket.on('force_next_level', onMove)
 
-    return () => {
-      socket.off("start_game");
-      socket.off("game_player_list");
-      socket.off("move");
-    };
-  }, [socket, onMove]);
+		return () => {
+			socket.off('start_game')
+			socket.off('game_player_list')
+			socket.off('move')
+			socket.off('force_next_level')
+		}
+	}, [socket, onMove])
 
-  useEffect(() => {
-    if (!gameData || !players) {
-      return;
-    }
+	const forceNextLevel = useCallback(() => {
+		socket.emit('force_next_level')
+	}, [socket])
 
-    const matrix = gameData.map.objects.map((row) => {
-      return row.map((obj) => obj);
-    });
+	useEffect(() => {
+		if (!gameData || !players) {
+			return
+		}
 
-    players.forEach((player) => {
-      if (player.level === CurrentUser.currentLevel) {
-        matrix[player.coords.y][player.coords.x] = Object.PLAYER;
-      }
-    });
+		const matrix = gameData.map.objects.map((row) => {
+			return row.map((obj) => obj)
+		})
 
-    setMatrix(matrix);
-    setLoading(false);
-  }, [gameData, players]);
+		players.forEach((player) => {
+			if (player.level === CurrentUser.currentLevel) {
+				matrix[player.coords.y][player.coords.x] = Object.PLAYER
+			}
+		})
 
-  useEffect(() => {
-    window.addEventListener("keypress", (e) => {
-      const direction = keyToDirection.get(e.key);
-      if (direction) {
-        socket.emit("move", { direction });
-      }
-    });
+		setMatrix(matrix)
+		setLoading(false)
+	}, [gameData, players])
 
-    return () => {
-      window.removeEventListener("keypress", () => {});
-    };
-  }, [socket]);
+	useEffect(() => {
+		window.addEventListener('keypress', (e) => {
+			const direction = keyToDirection.get(e.key)
+			if (direction) {
+				socket.emit('move', { direction })
+			}
+		})
 
-  return (
-    <>
-      {loading ? (
-        <StyledLoadingBlock>
-          <StyledLoadingText>Lobby ID: {props.lobbyID}</StyledLoadingText>
+		return () => {
+			window.removeEventListener('keypress', () => {})
+		}
+	}, [socket])
 
-          <StyledExtraText>
-            Waiting for all players to be ready...
-          </StyledExtraText>
+	return (
+		<>
+			{loading ? (
+				<StyledLoadingBlock>
+					<StyledLoadingText>Lobby ID: {props.lobbyID}</StyledLoadingText>
 
-          <StyledLoadingSpinner>
-            <ClipLoader loading={loading} size={100} />
-          </StyledLoadingSpinner>
-        </StyledLoadingBlock>
-      ) : (
-        <StyledGame>
-          {matrix &&
-            colors &&
-            matrix.map((row, y) => (
-              <Row key={y} row={row} y={y} colors={colors} />
-            ))}
-        </StyledGame>
-      )}
-    </>
-  );
-};
+					<StyledExtraText>
+						Waiting for all players to be ready...
+					</StyledExtraText>
 
-export default Game;
+					<StyledLoadingSpinner>
+						<ClipLoader loading={loading} size={100}/>
+					</StyledLoadingSpinner>
+				</StyledLoadingBlock>
+			) : (
+				<>
+					<StyledGame>
+						{matrix &&
+							colors &&
+							matrix.map((row, y) => (
+								<Row key={y} row={row} y={y} colors={colors}/>
+							))}
+					</StyledGame>
+					<div>
+						<button onClick={forceNextLevel}>Force next level</button>
+					</div>
+				</>
+			)}
+		</>
+	)
+}
+
+export default Game
