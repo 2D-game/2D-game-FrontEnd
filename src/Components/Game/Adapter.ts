@@ -14,6 +14,9 @@ export class Adapter {
 
 export class Logger {
   logString = (text: string) => {
-    console.log("converted colors interface to string with adapter", text);
+    console.log(
+      "ADAPTER: converted colors interface to string with adapter",
+      text
+    );
   };
 }
