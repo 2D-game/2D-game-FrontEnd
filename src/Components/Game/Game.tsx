@@ -15,6 +15,12 @@ import { ClipLoader } from "react-spinners";
 import { CurrentUser } from "../../helpers/currentUser";
 import { Colors, GamePlayer } from "../../types";
 import { Adapter, Logger } from "./Adapter";
+import {
+  clientCode,
+  FirstDecorator,
+  SecondDecorator,
+  ConcreteDataSource,
+} from "./Decorator";
 
 type Coordinates = {
   x: number;
@@ -156,12 +162,23 @@ const Game = (props: { lobbyID: any }) => {
     };
   }, [socket]);
 
+  // Adapter pattern below
   useEffect(() => {
     const adapter = new Adapter(colors);
     const convertedObject = adapter.getString();
     const logger = new Logger();
     convertedObject.length && logger.logString(convertedObject);
   }, [colors]);
+
+  // Decorator pattern below
+  useEffect(() => {
+    const simple = new ConcreteDataSource();
+    clientCode(simple);
+    const decorator1 = new FirstDecorator(simple);
+    const decorator2 = new SecondDecorator(decorator1);
+    clientCode(decorator1);
+    clientCode(decorator2);
+  }, []);
 
   if (loading) {
     return (
