@@ -29,7 +29,6 @@ const DisplayLobby = () => {
 
   useEffect(() => {
     socket.on("lobby_player_list", (data) => {
-      console.log("redisplayed", data);
       setPlayersList(data.data.users);
     });
 
@@ -39,8 +38,8 @@ const DisplayLobby = () => {
   }, [socket]);
 
   const handleReadyButtonClick = () => {
-	  socket.emit('set_ready')
-	  navigate(`/game/${lobbyid}`);
+    socket.emit("set_ready");
+    navigate(`/game/${lobbyid}`);
   };
 
   return (
