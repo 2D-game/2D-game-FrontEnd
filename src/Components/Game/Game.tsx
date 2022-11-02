@@ -47,13 +47,13 @@ type WonData = {
 };
 
 const keyToDirection: Map<string, string> = new Map([
-  ["w", "UP"],
-  ["a", "LEFT"],
-  ["s", "DOWN"],
-  ["d", "RIGHT"],
-  ["b", "UNDO"],
-  ["r", "REDO"]
-]);
+	['w', 'UP'],
+	['a', 'LEFT'],
+	['s', 'DOWN'],
+	['d', 'RIGHT'],
+	['b', 'UNDO' ],
+	['r', "REDO"]
+])
 
 const Game = (props: { lobbyID: any }) => {
   const [loading, setLoading] = useState<boolean>(true);
