@@ -52,6 +52,7 @@ const keyToDirection: Map<string, string> = new Map([
   ["s", "DOWN"],
   ["d", "RIGHT"],
   ["b", "UNDO"],
+  ["r", "REDO"]
 ]);
 
 const Game = (props: { lobbyID: any }) => {
