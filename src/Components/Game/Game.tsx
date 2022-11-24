@@ -119,11 +119,18 @@ const Game = (props: { lobbyID: any }) => {
     socket.on("move", onMove);
     socket.on("force_next_level", onMove);
 
+	socket.on('map_change', (data) => {
+		setGameData({
+			map: data.data
+		})
+	})
+
     return () => {
       socket.off("start_game");
       socket.off("game_player_list");
       socket.off("move");
       socket.off("force_next_level");
+	  socket.off('map_change');
     };
   }, [socket, onMove]);
 

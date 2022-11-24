@@ -4,5 +4,6 @@ export enum Object {
 	PLAYER = 'PLAYER',
 	WATER = 'WATER',
 	LAVA = 'LAVA',
-	FINISH = 'FINISH'
+	FINISH = 'FINISH',
+	APPLE = 'APPLE',
 }
