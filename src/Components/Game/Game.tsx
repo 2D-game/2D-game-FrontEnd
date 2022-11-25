@@ -112,7 +112,7 @@ const Game = (props: { lobbyID: any }) => {
 			})
 			setScores(newScores)
 		}
-	}, [players, scores])
+	}, [players])
 
 	useEffect(() => {
 		socket.on('player_score_change', (data) => {
@@ -128,7 +128,7 @@ const Game = (props: { lobbyID: any }) => {
 		return () => {
 			socket.off('player_score_change')
 		}
-	}, [scores, socket])
+	}, [socket])
 
 	useEffect(() => {
 		socket.on('start_game', (data) => {
