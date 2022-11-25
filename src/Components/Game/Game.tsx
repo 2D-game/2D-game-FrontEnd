@@ -103,26 +103,28 @@ const Game = (props: { lobbyID: any }) => {
 
 	useEffect(() => {
 		if (players) {
-			const newScores = players.map((player) => {
-				const score = scores.find((score) => score.id === player.id)
-				if (score) {
-					return score
-				}
-				return { id: player.id, username: player.username, score: 0 }
+			setScores((scores) => {
+				return players.map((player) => {
+					const score = scores.find((score) => score.id === player.id)
+					if (score) {
+						return score
+					}
+					return { id: player.id, username: player.username, score: 0 }
+				})
 			})
-			setScores(newScores)
 		}
 	}, [players])
 
 	useEffect(() => {
 		socket.on('player_score_change', (data) => {
-			const newScores = scores.map((score) => {
-				if (score.id === data.data.id) {
-					return { id: data.data.id, username: data.data.userName, score: data.data.score }
-				}
-				return score
+			setScores((scores) => {
+				return scores.map((score) => {
+					if (score.id === data.data.id) {
+						return { id: data.data.id, username: data.data.userName, score: data.data.score }
+					}
+					return score
+				})
 			})
-			setScores(newScores)
 		})
 
 		return () => {
