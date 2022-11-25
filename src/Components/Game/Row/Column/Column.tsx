@@ -1,7 +1,9 @@
 import { Object } from '../../Object'
-import { StyledFinish, StyledGround, StyledLava, StyledPlayer, StyledWall, StyledWater } from '../../Game.style'
+import { StyledFinish, StyledGround, StyledLava, StyledWall, StyledWater } from '../../Game.style'
 import { ReactComponent as IconPlayer } from '../../../../Assets/player.svg'
 import { ReactComponent as IconApple } from '../../../../Assets/apple.svg'
+import { ReactComponent as IconPear } from '../../../../Assets/pear.svg'
+import { ReactComponent as IconPortal } from '../../../../Assets/portal.svg'
 import { Colors } from '../../../../types'
 
 const Column = (props: {
@@ -25,16 +27,25 @@ const Column = (props: {
 			case Object.PLAYER:
 				return (
 					<StyledGround>
-						<StyledPlayer>
-							<IconPlayer/>
-						</StyledPlayer>
+						<IconPlayer/>
 					</StyledGround>
 				)
 			case Object.APPLE:
-				console.log('apple')
 				return (
 					<StyledGround>
 						<IconApple/>
+					</StyledGround>
+				)
+			case Object.PEAR:
+				return (
+					<StyledGround>
+						<IconPear/>
+					</StyledGround>
+				)
+			case Object.PORTAL:
+				return (
+					<StyledGround>
+						<IconPortal/>
 					</StyledGround>
 				)
 			default:

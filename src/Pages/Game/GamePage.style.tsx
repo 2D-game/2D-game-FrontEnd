@@ -6,4 +6,5 @@ export const StyledGamePage = styled.div`
   justify-content: center;
   flex: 0 0 100%;
   height: 100%;
+  flex-wrap: wrap;
 `;

@@ -6,4 +6,6 @@ export enum Object {
 	LAVA = 'LAVA',
 	FINISH = 'FINISH',
 	APPLE = 'APPLE',
+	PEAR = 'PEAR',
+	PORTAL = 'PORTAL',
 }
