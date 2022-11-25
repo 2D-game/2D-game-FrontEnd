@@ -112,7 +112,23 @@ const Game = (props: { lobbyID: any }) => {
 			})
 			setScores(newScores)
 		}
-	}, [players])
+	}, [players, scores])
+
+	useEffect(() => {
+		socket.on('player_score_change', (data) => {
+			const newScores = scores.map((score) => {
+				if (score.id === data.data.id) {
+					return { id: data.data.id, username: data.data.userName, score: data.data.score }
+				}
+				return score
+			})
+			setScores(newScores)
+		})
+
+		return () => {
+			socket.off('player_score_change')
+		}
+	}, [scores, socket])
 
 	useEffect(() => {
 		socket.on('start_game', (data) => {
@@ -128,16 +144,6 @@ const Game = (props: { lobbyID: any }) => {
 			})
 		})
 
-		socket.on('player_score_change', (data) => {
-			const newScores = scores.map((score) => {
-				if (score.id === data.data.id) {
-					return { id: data.data.id, username: data.data.userName, score: data.data.score }
-				}
-				return score
-			})
-			setScores(newScores)
-		})
-
 		socket.on('move', onMove)
 		socket.on('force_next_level', onMove)
 
@@ -150,7 +156,6 @@ const Game = (props: { lobbyID: any }) => {
 		return () => {
 			socket.off('start_game')
 			socket.off('game_player_list')
-			socket.off('player_score_change')
 			socket.off('move')
 			socket.off('force_next_level')
 			socket.off('map_change')
