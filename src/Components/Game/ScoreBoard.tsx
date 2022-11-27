@@ -1,6 +1,7 @@
 import { StyledScoreBoard } from './Game.style'
 
 export const ScoreBoard = ({ scores }: { scores: any }) => {
+	const sortedScores = scores.sort((a: any, b: any) => b.score - a.score)
 	return (
 		<StyledScoreBoard>
 			<h3>Score board</h3>
@@ -9,7 +10,7 @@ export const ScoreBoard = ({ scores }: { scores: any }) => {
 					<th>Username</th>
 					<th>Score</th>
 				</tr>
-				{scores.map((score: any) => (
+				{sortedScores.map((score: any) => (
 					<tr key={score.id}>
 						<td>{score.username}</td>
 						<td>{score.score}</td>
