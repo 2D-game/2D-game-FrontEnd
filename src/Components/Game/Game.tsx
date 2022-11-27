@@ -150,8 +150,11 @@ const Game = (props: { lobbyID: any }) => {
 		socket.on('force_next_level', onMove)
 
 		socket.on('map_change', (data) => {
+			if (data.data.level !== CurrentUser.currentLevel) {
+				return
+			}
 			setGameData({
-				map: data.data
+				map: data.data.map
 			})
 		})
 
