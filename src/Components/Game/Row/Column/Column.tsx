@@ -9,7 +9,7 @@ import { PlayersContext } from '../../Game'
 export const Player = ({ base64SVG }: { base64SVG?: string }) => {
 	return (
 		<div className="player">
-			<img src={'data:image/svg+xml;base64,' + base64SVG} alt="player"/>
+			<img src={'data:image/png;base64,' + base64SVG} alt="player"/>
 		</div>
 	)
 }
@@ -38,7 +38,7 @@ const Column = (props: {
 						{players => {
 							const img = players?.find(player => player.coords.x === props.x && player.coords.y === props.y)?.image
 							if (!img) {
-								return <></>
+								return <StyledGround/>
 							}
 							return (
 								<StyledGround>
