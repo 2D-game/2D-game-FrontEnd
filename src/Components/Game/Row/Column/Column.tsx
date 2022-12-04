@@ -3,6 +3,7 @@ import { StyledFinish, StyledGround, StyledLava, StyledWall, StyledWater } from 
 import { ReactComponent as IconApple } from '../../../../Assets/apple.svg'
 import { ReactComponent as IconPear } from '../../../../Assets/pear.svg'
 import { ReactComponent as IconPortal } from '../../../../Assets/portal.svg'
+import { ReactComponent as IconBox } from '../../../../Assets/box.svg'
 import { Colors } from '../../../../types'
 import { PlayersContext } from '../../Game'
 
@@ -64,6 +65,12 @@ const Column = (props: {
 				return (
 					<StyledGround>
 						<IconPortal/>
+					</StyledGround>
+				)
+			case Object.BOX:
+				return (
+					<StyledGround>
+						<IconBox/>
 					</StyledGround>
 				)
 			default:

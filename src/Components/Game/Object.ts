@@ -8,4 +8,5 @@ export enum Object {
 	APPLE = 'APPLE',
 	PEAR = 'PEAR',
 	PORTAL = 'PORTAL',
+	BOX = 'BOX',
 }
