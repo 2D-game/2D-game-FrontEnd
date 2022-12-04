@@ -1,10 +1,18 @@
 import { Object } from '../../Object'
 import { StyledFinish, StyledGround, StyledLava, StyledWall, StyledWater } from '../../Game.style'
-import { ReactComponent as IconPlayer } from '../../../../Assets/player.svg'
 import { ReactComponent as IconApple } from '../../../../Assets/apple.svg'
 import { ReactComponent as IconPear } from '../../../../Assets/pear.svg'
 import { ReactComponent as IconPortal } from '../../../../Assets/portal.svg'
 import { Colors } from '../../../../types'
+import { PlayersContext } from '../../Game'
+
+export const Player = ({ base64SVG }: { base64SVG?: string }) => {
+	return (
+		<div className="player">
+			<img src={'data:image/svg+xml;base64,' + base64SVG} alt="player"/>
+		</div>
+	)
+}
 
 const Column = (props: {
 	x: number;
@@ -26,9 +34,19 @@ const Column = (props: {
 				return <StyledFinish/>
 			case Object.PLAYER:
 				return (
-					<StyledGround>
-						<IconPlayer/>
-					</StyledGround>
+					<PlayersContext.Consumer>
+						{players => {
+							const img = players?.find(player => player.coords.x === props.x && player.coords.y === props.y)?.image
+							if (!img) {
+								return <></>
+							}
+							return (
+								<StyledGround>
+									<Player base64SVG={img}/>
+								</StyledGround>
+							)
+						}}
+					</PlayersContext.Consumer>
 				)
 			case Object.APPLE:
 				return (

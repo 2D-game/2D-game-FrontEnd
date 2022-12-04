@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { Object } from './Object'
 import Row from './Row/Row'
 import { SocketContext } from '../../Context'
@@ -28,6 +28,7 @@ type Player = {
 	level: number;
 	coords: Coordinates;
 	username: string;
+	image: string;
 };
 
 type GameData = {
@@ -51,6 +52,8 @@ const keyToDirection: Map<string, string> = new Map([
 	['b', 'UNDO'],
 	['r', 'REDO']
 ])
+
+export const PlayersContext = createContext<Player[] | null>(null)
 
 const Game = (props: { lobbyID: any }) => {
 	const [loading, setLoading] = useState<boolean>(true)
@@ -90,7 +93,8 @@ const Game = (props: { lobbyID: any }) => {
 						id: data.data.id,
 						level: data.data.level,
 						coords: data.data.coords,
-						username: data.data.userName
+						username: data.data.userName,
+						image: player.image
 					}
 				}
 				return player
@@ -244,7 +248,7 @@ const Game = (props: { lobbyID: any }) => {
 	}
 
 	return (
-		<>
+		<PlayersContext.Provider value={players}>
 			<StyledGame>
 				{matrix &&
 					colors &&
@@ -257,7 +261,7 @@ const Game = (props: { lobbyID: any }) => {
 			</div>
 			<br/><br/>
 			<ScoreBoard scores={scores}/>
-		</>
+		</PlayersContext.Provider>
 	)
 }
 
