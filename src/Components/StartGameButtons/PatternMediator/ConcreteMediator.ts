@@ -1,3 +1,6 @@
+import { AlertStateContext } from "../PatternState/AlertStateContext";
+import { StandartJsAlert } from "../PatternState/StandartJsAlert";
+import { SweetAlert } from "../PatternState/SweetAlert";
 import { Mediator } from "./Interfaces";
 import { JoinAuthentication } from "./JoinAuthentication";
 
@@ -12,18 +15,21 @@ export class ConcreteMediator implements Mediator {
     public notify(sender: object, event: string): boolean {
         if (event === 'click') {
             if (this.component1.joinButton.lobbyID === "") {
-                alert("Lobby code can NOT be empty")
+                const givenAlert = new AlertStateContext(new StandartJsAlert(), "Lobby code can NOT be empty");
+                givenAlert.alert();
                 return true;
             }
             if (this.component1.joinButton.userName === "") {
-                alert("Username can NOT be empty")
+                const givenAlert = new AlertStateContext(new StandartJsAlert(), "Username can NOT be empty");
+                givenAlert.alert();
                 return true;
             }
         }
 
         if (event === 'lobbyIDChange') {
             if (this.component1.joinButton.lobbyID.length > 4) {
-                alert("Lobby code can NOT be longer than 4 symbols")
+                const givenAlert = new AlertStateContext(new SweetAlert(), "Lobby code can NOT be longer than 4 symbols");
+                givenAlert.alert();
                 return true;
             }
         }
