@@ -14,6 +14,10 @@ import { SocketContext } from "../../../../Context";
 import { Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { CurrentUser } from "../../../../helpers/currentUser";
+import { DisplayUsernameInputs } from './PatternVisitor/DisplayUsernameInputs';
+import { DisplayEnterLobbyCodeInputs } from './PatternVisitor/DisplayEnterLobbyCodeInputs';
+import { JoinModalVisitor } from "./PatternVisitor/JoinModalVisitor";
+import { Visitor } from "./PatternVisitor/Interfaces";
 
 interface IJoinButtonModalProps {
   isJoinLobbyModalOpen: boolean;
@@ -29,6 +33,10 @@ const JoinButtonModal = ({
   const [userName, setUserName] = useState<string>("");
   const [lobbyID, setLobbyID] = useState<string>("");
 
+  
+  const joinModalVisitor = new JoinModalVisitor();
+
+
   useEffect(() => {
     socket.on("join_lobby", (data) => {
       if (!data.error) {
@@ -41,6 +49,19 @@ const JoinButtonModal = ({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
+
+  const clientCode = (visitor: Visitor) => {
+    const components = [
+      new DisplayUsernameInputs(userName, handleUserNameChange),
+      new DisplayEnterLobbyCodeInputs(lobbyID, handleLobbyIDChange)
+    ]
+  
+    let temp: JSX.Element[] = []
+    for (const component of components) {
+      temp.push(component.accept(visitor));
+    }
+    return temp
+  }
 
   const handleModalClose = () => {
     setIsJoinLobbyModalOpen(false);
@@ -55,6 +76,7 @@ const JoinButtonModal = ({
   };
 
   const handleJoinButtonClick = () => {
+
     socket.emit("join_lobby", {
       username: userName,
       id: lobbyID,
@@ -66,7 +88,8 @@ const JoinButtonModal = ({
     <>
       <Modal open={isJoinLobbyModalOpen} onClose={handleModalClose}>
         <Box sx={styles.joinLobbyModalContainer}>
-          <InputLabel htmlFor="input-with-icon-adornment">
+          {clientCode(joinModalVisitor)}
+          {/* <InputLabel htmlFor="input-with-icon-adornment">
             Your Username:
           </InputLabel>
           <Input
@@ -92,7 +115,7 @@ const JoinButtonModal = ({
             }
             onChange={handleLobbyIDChange}
             value={lobbyID}
-          />
+          /> */}
           <br />
           <Button
             variant="outlined"
