@@ -2,7 +2,6 @@ import { Component, Visitor } from "./Interfaces";
 import { Input, InputAdornment, InputLabel } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 
-//export class ConcreteComponentA implements Component {
 export class DisplayUsernameInputs implements Component {
     public userName: any;
     public handleUserNameChange: any;

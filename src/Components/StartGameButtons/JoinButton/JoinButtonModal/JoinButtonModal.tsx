@@ -2,38 +2,30 @@ import React, { useContext, useState, useEffect } from "react";
 import {
   Box,
   Button,
-  Input,
-  InputAdornment,
-  InputLabel,
   Modal,
 } from "@mui/material";
-import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
-import PersonIcon from "@mui/icons-material/Person";
 import styles from "./JoinButtonModal.styling";
 import { SocketContext } from "../../../../Context";
 import { Socket } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import { CurrentUser } from "../../../../helpers/currentUser";
-import { DisplayUsernameInputs } from './PatternVisitor/DisplayUsernameInputs';
-import { DisplayEnterLobbyCodeInputs } from './PatternVisitor/DisplayEnterLobbyCodeInputs';
-import { JoinModalVisitor } from "./PatternVisitor/JoinModalVisitor";
-import { Visitor } from "./PatternVisitor/Interfaces";
+import { DisplayUsernameInputs } from '../../PatternVisitor/DisplayUsernameInputs';
+import { DisplayEnterLobbyCodeInputs } from '../../PatternVisitor/DisplayEnterLobbyCodeInputs';
+import { JoinModalVisitor } from "../../PatternVisitor/JoinModalVisitor";
+import { Visitor } from "../../PatternVisitor/Interfaces";
+import { JoinAuthentication } from "../../PatternMediator/JoinAuthentication";
+import { ConcreteMediator } from "../../PatternMediator/ConcreteMediator";
 
 interface IJoinButtonModalProps {
   isJoinLobbyModalOpen: boolean;
   setIsJoinLobbyModalOpen: (bool: boolean) => void;
 }
 
-const JoinButtonModal = ({
-  isJoinLobbyModalOpen,
-  setIsJoinLobbyModalOpen,
-}: IJoinButtonModalProps) => {
+const JoinButtonModal = ({ isJoinLobbyModalOpen, setIsJoinLobbyModalOpen }: IJoinButtonModalProps) => {
   const socket = useContext(SocketContext) as Socket;
   const navigate = useNavigate();
   const [userName, setUserName] = useState<string>("");
   const [lobbyID, setLobbyID] = useState<string>("");
-
-  
   const joinModalVisitor = new JoinModalVisitor();
 
 
@@ -55,7 +47,7 @@ const JoinButtonModal = ({
       new DisplayUsernameInputs(userName, handleUserNameChange),
       new DisplayEnterLobbyCodeInputs(lobbyID, handleLobbyIDChange)
     ]
-  
+
     let temp: JSX.Element[] = []
     for (const component of components) {
       temp.push(component.accept(visitor));
@@ -72,11 +64,22 @@ const JoinButtonModal = ({
   };
 
   const handleLobbyIDChange = (e: any) => {
+    let lobbyID: string = e.target.value as string;
+    const joinAuth = new JoinAuthentication({ userName, lobbyID });
+    new ConcreteMediator(joinAuth);
+    const validation: boolean = joinAuth.checkIfLobbyIDIsWrittenCorrectly();
+
+    if (validation) return;
+
     setLobbyID(e.target.value);
   };
 
   const handleJoinButtonClick = () => {
+    const joinAuth = new JoinAuthentication({ userName, lobbyID });
+    new ConcreteMediator(joinAuth);
+    const validation: boolean = joinAuth.checkIfTextBoxNotClear();
 
+    if (validation) return;
     socket.emit("join_lobby", {
       username: userName,
       id: lobbyID,
@@ -89,33 +92,6 @@ const JoinButtonModal = ({
       <Modal open={isJoinLobbyModalOpen} onClose={handleModalClose}>
         <Box sx={styles.joinLobbyModalContainer}>
           {clientCode(joinModalVisitor)}
-          {/* <InputLabel htmlFor="input-with-icon-adornment">
-            Your Username:
-          </InputLabel>
-          <Input
-            sx={{ marginBottom: 1 }}
-            id="input-with-icon-adornment"
-            startAdornment={
-              <InputAdornment position="start">
-                <PersonIcon />
-              </InputAdornment>
-            }
-            onChange={handleUserNameChange}
-            value={userName}
-          />
-          <InputLabel htmlFor="input-with-icon-adornment">
-            Enter lobby code:
-          </InputLabel>
-          <Input
-            id="input-with-icon-adornment"
-            startAdornment={
-              <InputAdornment position="start">
-                <MeetingRoomIcon />
-              </InputAdornment>
-            }
-            onChange={handleLobbyIDChange}
-            value={lobbyID}
-          /> */}
           <br />
           <Button
             variant="outlined"
