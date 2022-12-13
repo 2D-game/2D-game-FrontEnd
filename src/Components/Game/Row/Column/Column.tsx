@@ -4,6 +4,8 @@ import { ReactComponent as IconApple } from '../../../../Assets/apple.svg'
 import { ReactComponent as IconPear } from '../../../../Assets/pear.svg'
 import { ReactComponent as IconPortal } from '../../../../Assets/portal.svg'
 import { ReactComponent as IconBox } from '../../../../Assets/box.svg'
+import { ReactComponent as IconGiftBox} from '../../../../Assets/redbox.svg'
+import BadApple from '../../../../Assets/badapple.png'
 import { Colors } from '../../../../types'
 import { PlayersContext } from '../../Game'
 
@@ -71,6 +73,20 @@ const Column = (props: {
 				return (
 					<StyledGround>
 						<IconBox/>
+					</StyledGround>
+				)
+			case Object.GIFT_BOX:
+				return (
+					<StyledGround>
+						<IconGiftBox/>
+					</StyledGround>
+				)
+			case Object.BAD_APPLE:
+				return (
+					<StyledGround>
+						<div className="badapple">
+							<img  src={BadApple} alt="badapple"/>
+						</div>
 					</StyledGround>
 				)
 			default:

@@ -9,4 +9,6 @@ export enum Object {
 	PEAR = 'PEAR',
 	PORTAL = 'PORTAL',
 	BOX = 'BOX',
+	GIFT_BOX = 'GIFT_BOX',
+	BAD_APPLE = 'BAD_APPLE'
 }
