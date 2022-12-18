@@ -29,7 +29,17 @@ export const StyledNextLevelButtonWrapper = styled.div``;
 
 export const StyledTerminal = styled.div`
   .react-terminal-wrapper {
-    height: 458px;
-    width: 400px;
+    height: 28.625rem;
+    width: 25rem;
+    //padding: 4rem 1rem;
+    padding-top: 4rem;
+    padding-bottom: 0;
+    padding-left: 1rem;
+
+    .react-terminal {
+      height: 24.625rem;
+    }
   }
 `;
+
+export const StyledMementoButtons = styled.div``;
