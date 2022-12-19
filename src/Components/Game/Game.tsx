@@ -32,6 +32,7 @@ import Terminal, { TerminalOutput } from "react-terminal-ui";
 import {
   StyledGamePageWrapper,
   StyledLowerBlock,
+  StyledMementoButtons,
   StyledNextLevelButtonWrapper,
   StyledSideWrapper,
   StyledTerminal,
@@ -249,13 +250,15 @@ const Game = (props: { lobbyID: any }) => {
     clientCode(decorator2);
   }, []);
 
-  const [terminalLineData, setTerminalLineData] = useState([
+  const [terminalLineData, setTerminalLineData] = useState<JSX.Element[]>([
     <TerminalOutput>Available commands:</TerminalOutput>,
     <TerminalOutput>"up" - moves up</TerminalOutput>,
     <TerminalOutput>"left" - moves left</TerminalOutput>,
     <TerminalOutput>"down" - moves down</TerminalOutput>,
     <TerminalOutput>"right" - moves right</TerminalOutput>,
   ]);
+
+  const [terminalBackUp, setTerminalBackUp] = useState<JSX.Element[]>([]);
 
   interface Expression {
     name: string;
@@ -296,12 +299,19 @@ const Game = (props: { lobbyID: any }) => {
   ];
 
   const handleTerminalCommand = (terminalInput: string) => {
-    if (terminalLineData.length >= 16) {
-      terminalLineData.shift();
-    } else {
+    const exists = commandsList.find((value) => value.name === terminalInput);
+
+    if (exists) {
       setTerminalLineData((prevState) => [
         ...prevState,
         <TerminalOutput>$ {terminalInput}</TerminalOutput>,
+      ]);
+    } else {
+      setTerminalLineData((prevState) => [
+        ...prevState,
+        <TerminalOutput>
+          Command "{terminalInput}" does not exist!
+        </TerminalOutput>,
       ]);
     }
 
@@ -360,6 +370,16 @@ const Game = (props: { lobbyID: any }) => {
                 {terminalLineData}
               </Terminal>
             </StyledTerminal>
+
+            <StyledMementoButtons>
+              <button onClick={() => setTerminalBackUp(terminalLineData)}>
+                Save state
+              </button>
+
+              <button onClick={() => setTerminalLineData(terminalBackUp)}>
+                Restore state
+              </button>
+            </StyledMementoButtons>
           </StyledSideWrapper>
         </StyledUpperBlock>
 
